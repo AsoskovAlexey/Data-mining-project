@@ -12,4 +12,4 @@ How to set up selenium:
   4. in line 14 put a path to the output txt file for storing data. THIS FILE SHOULD BE CREATED BEFORE RUNNING THE SCRIPT!
   
   pagesaver.py can be used to save pages in html. this code will be used later in the project 
-  
+  newuser.html is the result of pagesaver saving the special offer page
