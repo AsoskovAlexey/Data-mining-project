@@ -11,6 +11,7 @@ OP = webdriver.ChromeOptions()
 OP.add_argument("--start-maximized")  # the window should start maximised
 driver = webdriver.Chrome(service=SER, options=OP)
 URL_TEMPLATE = ".html"
+DATAFILE = 'datafile.txt'
 
 result_dict = {}  # create a dictionary for results
 
@@ -57,7 +58,7 @@ def scroll():
 
 def write_into_txt(file):
     """write the output dictionary as txt file for further work"""
-    with open('datafile.txt', 'w') as data_file:
+    with open(DATAFILE, 'w') as data_file:
         data_file.write(json.dumps(file))
     print(f"{len(file)} entries saved into datafile!")
 
@@ -99,14 +100,6 @@ def collect_card_info(end: int):
             print(f"collected {i} results")
 
 
-def all_tests():
-    assert get_id("""https://www.aliexpress.us/item/3256804460500632.html?pdp_ext_f=%7B%22ship_from%22%3A%22CN%22%2C%22s
-        ku_id%22%3A%2212000029965651299%22%7D&scm=1007.34914.307035.0&scm_id=1007.34914.307035.0&scm-url=1007.34914.307035.0
-        &pvid=ec7408e9-5690-4dac-ab32-d6f013f97e50&utparam=%257B%2522process_id%2522%253A%2522401%2522%252C%2522x_object_typ
-        e%2522%253A%2522product%2522%252C%2522pvid%2522%253A%2522ec7408e9-5690-4dac-ab32-""") == "3256804460500632"
-
-
 if __name__ == '__main__':
     main_sequence("https://campaign.aliexpress.com/wow/gcp/new-user-channel/index", 2500)
-    #all_tests()
     write_into_txt(result_dict)
