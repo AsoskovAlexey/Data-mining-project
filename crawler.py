@@ -1,9 +1,9 @@
+import selenium.common.exceptions
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import json
 
 # Setting up driver
 SER = Service(r"C:\Program Files (x86)\chromedriver.exe")
@@ -11,7 +11,7 @@ OP = webdriver.ChromeOptions()
 OP.add_argument("--start-maximized")  # the window should start maximised
 driver = webdriver.Chrome(service=SER, options=OP)
 URL_TEMPLATE = ".html"
-DATAFILE = 'datafile.txt'
+DATAFILE = 'datafile1.txt'
 
 result_dict = {}  # create a dictionary for results
 
@@ -56,11 +56,12 @@ def scroll():
         last_height = new_height
 
 
-def write_into_txt(file):
+def write_into_txt(key, entry):
     """write the output dictionary as txt file for further work"""
-    with open(DATAFILE, 'w') as data_file:
-        data_file.write(json.dumps(file))
-    print(f"{len(file)} entries saved into datafile!")
+    line_to_write = f"'{key}':{entry},"
+    with open(DATAFILE, 'a+') as data_file:
+        data_file.write(line_to_write)
+    print(line_to_write)
 
 
 def scrape(elements_scraped):
@@ -84,7 +85,7 @@ def main_sequence(url: str, maximum: int = 0):
             while True:  # if no value was passed, runs infinitely
                 scrape(elements_scraped)
                 elements_scraped += 10
-    except Exception as err:
+    except (selenium.common.exceptions.WebDriverException, selenium.common.exceptions.TimeoutException) as err:
         print(f"Timeout! Page can not be parsed:{err}")
     driver.quit()
 
@@ -96,10 +97,10 @@ def collect_card_info(end: int):
             element = driver.find_element(by=By.XPATH, value=path_to_element(i))
             url = element.get_attribute('href')
             card_info = element.get_attribute('outerText')
-            result_dict[get_id(url)] = unpack_card_info(card_info, url)
+            write_into_txt(get_id(url), unpack_card_info(card_info, url))
             print(f"collected {i} results")
 
 
 if __name__ == '__main__':
-    main_sequence("https://campaign.aliexpress.com/wow/gcp/new-user-channel/index", 2500)
-    write_into_txt(result_dict)
+    main_sequence("https://campaign.aliexpress.com/wow/gcp/new-user-channel/index", 0)
+    print("sequence finished")
