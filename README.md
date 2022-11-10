@@ -9,7 +9,9 @@ How to set up selenium:
   2. downnload the webdriver I used ChromeDriver 107.0.5304.62 with 107. version of Google Chrome
   3. line 9 SER = Service(r"C:\Program Files (x86)\chromedriver.exe") should correspond to the full path to the driver
   3.1 if not using Google Chrome and Chromedriver lines 9-12 should be changed accordingly. DO IT AT YOUR OWN RISK! File is configured to work with Chrome
-  4. in line 14 put a path to the output txt file for storing data. THIS FILE SHOULD BE CREATED BEFORE RUNNING THE SCRIPT!
+  4. in line 14 put a path to the output txt file for storing data.
+ 
+ The output is written in a dictionary-like structure and needs to be corrected if you exited with a keyboard interrupt to remove the last entry if it was not written properly. In order to make this a dictionary, {} have to be put around the text
   
   pagesaver.py can be used to save pages in html. this code will be used later in the project 
   newuser.html is the result of pagesaver saving the special offer page
