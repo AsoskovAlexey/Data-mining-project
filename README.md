@@ -6,7 +6,7 @@ This project aims to collect data from [Aliexpress](https://aliexpress.com) for 
 
 :heavy_check_mark: Export the result to a txt file
 
-Currently the scraping engine on *selenium* was implemented to parse through the [special offers page](https://campaign.aliexpress.com/wow/gcp/new-user-channel/index) of Aliexpress. In order for the **scraper.py** to work, *selenium* should be properly installed and the variables in the file should correspond to files in the system:exclamation: 
+Currently, the scraping engine on *selenium* was implemented to parse through the [special offers page](https://campaign.aliexpress.com/wow/gcp/new-user-channel/index) of Aliexpress. In order for the **scraper.py** to work, *selenium* should be properly installed and the variables in the file should correspond to files in the system:exclamation: 
 ## How to set up selenium: 
 
 0. refer to this guide : https://selenium-python.readthedocs.io/installation.html
@@ -22,3 +22,5 @@ Currently the scraping engine on *selenium* was implemented to parse through the
   
   **pagesaver.py** can be used to save pages in html. :stopwatch: This code will be used later in the project 
   **newuser.html** is the result of pagesaver saving the special offer page.
+
+Project authors : [Asoskov Aleksei](https://www.linkedin.com/in/aleksei-asoskov-b3051b257/), [Denis Laevskiy](https://www.linkedin.com/in/denis-laevskiy-79b715221/)

@@ -1,0 +1,6 @@
+{
+  "XPATH_mask":  "/ html / body / div[2] / div / div / div[3] / div[2] / a[",
+  "URL_TEMPLATE": ".html",
+  "DATAFILE": "datafile1.txt"
+
+}
