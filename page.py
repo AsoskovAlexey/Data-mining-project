@@ -8,7 +8,6 @@ class Page():
     
     def __init__(self, page):
         self.__page = page
-        time.sleep(1)
     
     def get_page(self):
         return self.__page
@@ -21,3 +20,4 @@ class Page():
     
     def get_n_pages(self):
         return int(re.search(r'\d+', self.__page.find('span', class_="total-page").text).group(0))
+    

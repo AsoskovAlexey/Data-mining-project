@@ -5,12 +5,13 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-#from selenium.common import TimeoutException
-#from tqdm import tqdm
-#from selenium.webdriver import ActionChains
-#from selenium.webdriver.common.by import By
-#from selenium.webdriver.support.wait import WebDriverWait
-#from selenium.webdriver.support import expected_conditions as EC
+
+# from selenium.common import TimeoutException
+# from tqdm import tqdm
+# from selenium.webdriver import ActionChains
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support.wait import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
 
 
 class Scraper:
@@ -18,7 +19,13 @@ class Scraper:
     # Disable dynamic attributes
     __slots__ = ["__options", "__driver", "__scroll_pause_time", "__scroll_height"]
 
-    def __init__(self, silent_mode=True, scroll_pause_time=1, scroll_height=1000, window_size=(1920, 1080)):
+    def __init__(
+        self,
+        silent_mode=True,
+        scroll_pause_time=1,
+        scroll_height=1000,
+        window_size=(1920, 1080),
+    ):
         """
         Driver init
         """
@@ -35,6 +42,7 @@ class Scraper:
         """
         Returns the page as BeautifulSoup soup
         """
+
         def scroll(self):
             """
             Scroll the page to the end
@@ -43,9 +51,6 @@ class Scraper:
                 "return document.body.scrollHeight"
             )
             scroll = 0
-            last_height = self.__driver.execute_script(
-                "return document.body.scrollHeight"
-            )
             while True:
                 scroll += self.__scroll_height
                 self.__driver.execute_script(f"window.scrollTo(0, {str(scroll)})")
@@ -58,7 +63,6 @@ class Scraper:
                 if new_height == last_height:
                     break
                 last_height = new_height
-                
 
         self.__driver.get(url)
         scroll(self)
@@ -66,10 +70,10 @@ class Scraper:
 
     def apply_page_settings(self, url):
         if self.__options.headless is False:
-            user_input = ''
+            user_input = ""
             self.__driver.get(url)
-            while user_input != 'done':
-                user_input = input('Apply the settings and input "Done"').lower()
-            print('Settings applied')
+            while user_input != "done":
+                user_input = input('Apply the settings and input"Done"\n').lower()
+            print("Settings applied")
         else:
             raise Exception("Unable in silent_mode=True")
