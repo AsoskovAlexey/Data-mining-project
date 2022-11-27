@@ -1,0 +1,5 @@
+ project db.png
+ .vscode/
+ .venv/
+ .ipynb_checkpoints/
+ __pycache__/
