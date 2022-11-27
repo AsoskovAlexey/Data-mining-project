@@ -1,10 +1,8 @@
 import json
-import sys
-sys.path.append('/db')
 from db import MySQL
 
-DB_CONFIG_FILE = "db_config.json"
-DB_STRUCTURE_FILE = "project_db_structure.sql"
+DB_CONFIG_FILE = "db/db_config.json"
+DB_STRUCTURE_FILE = "db/project_db_structure.sql"
 DB_NAME = "aliexpress"
 
 
@@ -17,7 +15,7 @@ def read_file(path):
         print(f"Error: No such file: {path}")
 
 
-def main():
+def start():
     with open(DB_CONFIG_FILE) as json_file:
         config = json.load(json_file)
 
@@ -46,7 +44,7 @@ def main():
             user_input = input("Enter y or n\n").lower()
             if user_input == "y":
                 db.push(f"DROP DATABASE {DB_NAME};")
-                main()
+                start()
                 break
             elif user_input == "n":
                 print("Exit")
@@ -56,4 +54,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    start()

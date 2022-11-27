@@ -1,5 +1,5 @@
 CREATE TABLE products (
-  id int NOT NULL,
+  id BIGINT NOT NULL,
   link varchar(1024) NOT NULL,
   title varchar(1024),
   rating float,
@@ -38,10 +38,10 @@ CREATE TABLE reviews (
   PRIMARY KEY (ID)
 );
 
-ALTER TABLE products ADD FOREIGN KEY(category_id) REFERENCES category_level_3(id);
+#ALTER TABLE products ADD FOREIGN KEY(category_id) REFERENCES category_level_3(id);
 
-ALTER TABLE category_level_3 ADD FOREIGN KEY(parent_id) REFERENCES category_level_2(id);
+#ALTER TABLE category_level_3 ADD FOREIGN KEY(parent_id) REFERENCES category_level_2(id);
 
-ALTER TABLE category_level_2 ADD FOREIGN KEY(parent_id) REFERENCES category_level_1(id);
+#ALTER TABLE category_level_2 ADD FOREIGN KEY(parent_id) REFERENCES category_level_1(id);
 
-ALTER TABLE reviews ADD FOREIGN KEY(product_id) REFERENCES products(id);
+#ALTER TABLE reviews ADD FOREIGN KEY(product_id) REFERENCES products(id);

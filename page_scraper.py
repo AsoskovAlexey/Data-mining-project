@@ -1,11 +1,11 @@
 import time
-import re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
+# import re
 # from selenium.common import TimeoutException
 # from tqdm import tqdm
 # from selenium.webdriver import ActionChains
@@ -22,7 +22,7 @@ class Scraper:
     def __init__(
         self,
         silent_mode=True,
-        scroll_pause_time=1,
+        scroll_pause_time=5,
         scroll_height=1000,
         window_size=(1920, 1080),
     ):
@@ -72,8 +72,8 @@ class Scraper:
         if self.__options.headless is False:
             user_input = ""
             self.__driver.get(url)
-            while user_input != "done":
-                user_input = input('Apply the settings and input"Done"\n').lower()
+            user_input = input('Apply the settings and press "Enter"\n')
             print("Settings applied")
+            del user_input
         else:
             raise Exception("Unable in silent_mode=True")
