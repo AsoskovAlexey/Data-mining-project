@@ -1,5 +1,5 @@
- 'project db.png'
- .vscode/
- .venv/
- .ipynb_checkpoints/
- __pycache__/
+db_config.json
+.vscode/
+.venv/
+.ipynb_checkpoints/
+__pycache__/
