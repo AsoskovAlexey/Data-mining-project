@@ -33,5 +33,6 @@ class Product:
             r"\d+", soup.find("span", class_="product-reviewer-sold").text
         ).group(0)
         self.price = re.search(
-            r"\d+\.\d+", soup.find("span", class_="uniform-banner-box-price").text
-        ).group(0)
+            r"\d+[\.,]\d+", soup.find("span", class_="uniform-banner-box-price").text
+        ).group(0).replace(",", '.')
+        print(self.price)

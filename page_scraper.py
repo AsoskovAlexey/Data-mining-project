@@ -22,7 +22,7 @@ class Scraper:
     def __init__(
         self,
         silent_mode=True,
-        scroll_pause_time=5,
+        scroll_pause_time=2,
         scroll_height=1000,
         window_size=(1920, 1080),
     ):
