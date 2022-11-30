@@ -1,5 +1,5 @@
 from db import MySQL
-from global_functions import *
+from global_functions import read_json, read_file
 from global_variables import Constants
 
 
@@ -12,8 +12,7 @@ def get_user_input(mode):
     elif mode == "skip":
         return "n"
     else:
-        return mode
-
+        raise ValueError(f'Invalid mode specified: "{mode}". Use "ask","force" or "skip".')
 
 def start(mode="ask"):
     """

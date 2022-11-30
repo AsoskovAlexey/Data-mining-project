@@ -18,7 +18,7 @@ def main():
 
     config = read_json(Constants.DB_CONFIG_FILE)
     db = MySQL(config)
-    db_creation_script.start(mode='force')
+    db_creation_script.start(mode="skip")
 
     scraper = Scraper(silent_mode=False)
     # Set language, country and currency
@@ -36,7 +36,7 @@ def main():
             f"{product.id}, {product.link}, {product.title}, {product.rating}, {product.n_reviews}, {product.n_orders}, {product.price}, {category}"
         )
         db.push(
-            f'INSERT INTO products (id, link, title, rating, n_reviews, n_orders, price, category_id)\
+            f'REPLACE INTO products (id, link, title, rating, n_reviews, n_orders, price, category_id)\
             VALUES ({product.id}, "{product.link}", "{product.title}", {product.rating}, {product.n_reviews}, {product.n_orders}, {product.price}, {category});'
         )
 

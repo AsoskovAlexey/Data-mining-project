@@ -24,15 +24,40 @@ class Product:
         ]  # remove "item/" and ".html"
         self.link = url
         self.title = soup.find("h1", class_="product-title-text").text
-        self.rating = soup.find("span", class_="overview-rating-average").text
-        self.n_reviews = re.search(
-            r"\d+",
-            soup.find("span", {"exp_page": "detail_page", "exp_type": "reviews"}).text,
-        ).group(0)
-        self.n_orders = re.search(
-            r"\d+", soup.find("span", class_="product-reviewer-sold").text
-        ).group(0)
-        self.price = re.search(
-            r"\d+[\.,]\d+", soup.find("span", class_="uniform-banner-box-price").text
-        ).group(0).replace(",", '.')
-        print(self.price)
+
+        # If there is no rating, it is not displayed on the product page
+        if (rating := soup.find("span", class_="overview-rating-average")) is not None:
+            self.rating = rating.text
+        else:
+            self.rating = "NULL"
+
+        # If there are no reviews, they are not displayed on the product page
+        if (
+            n_reviews := soup.find(
+                "span", {"exp_page": "detail_page", "exp_type": "reviews"}
+            )
+        ) is not None:
+            self.n_reviews = re.search(
+                r"\d+",
+                n_reviews.text,
+            ).group(0)
+        else:
+            self.n_reviews = 0
+
+        # If there are no orders, they are not displayed on the product page
+        if (n_orders := soup.find("span", class_="product-reviewer-sold")) is not None:
+            self.n_orders = re.search(r"\d+", n_orders.text).group(0)
+        else:
+            self.n_orders = 0
+
+        # Prices can be in different classes
+        def get_price(html_tag):
+            """Returns price as a float from html"""
+            return re.search(r"\d+[\.,]\d+", html_tag.text).group(0).replace(",", ".")
+
+        if (price := soup.find("span", class_="uniform-banner-box-price")) is not None:
+            self.price = get_price(price)
+        elif (price := soup.find("span", class_="product-price-value")) is not None:
+            self.price = get_price(price)
+        else:
+            self.price = "NULL"
