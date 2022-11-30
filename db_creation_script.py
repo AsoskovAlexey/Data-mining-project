@@ -1,66 +1,63 @@
-import json
 from db import MySQL
-
-DB_CONFIG_FILE = "db/db_config.json"
-DB_STRUCTURE_FILE = "db/project_db_structure.sql"
-DB_NAME = "aliexpress"
+from global_functions import *
+from global_variables import Constants
 
 
-def read_file(path):
-    """Returns a file as a string"""
-    try:
-        with open(path) as file:
-            return file.read()
-    except FileNotFoundError:
-        print(f"Error: No such file: {path}")
+def get_user_input(mode):
+    """Returns the user_input based on the mode"""
+    if mode == "force":
+        return "y"
+    elif mode == "ask":
+        return input("Enter y or n\n").lower()
+    elif mode == "skip":
+        return "n"
+    else:
+        return mode
 
 
-def read_json(path):
-    """Returns a data from json"""
-    try:
-        with open(path) as json_file:
-            return json.load(json_file)
-    except FileNotFoundError:
-        raise Exception(f"Error: No such file: {path}")
+def start(mode="ask"):
+    """
+    Executes the database creation script
 
-
-def start(force=False):
-    """Executes the database creation script"""
+    Args:
+        mode (str, optional): Defaults to "ask".
+            'ask': asks what to do if database is already exists
+            'force': force creation of new database
+            'skip': skip database creation if the database already exists
+    """
 
     print(
         f"Database creation script started. \n\tConfiguration:\
-        \n\t\tDB_CONFIG_FILE: {DB_CONFIG_FILE}\
-        \n\t\tDB_STRUCTURE_FILE: {DB_STRUCTURE_FILE}\
-        \n\t\tDB_NAME: {DB_NAME}\n"
+        \n\t\tDB_CONFIG_FILE: {Constants.DB_CONFIG_FILE}\
+        \n\t\tDB_STRUCTURE_FILE: {Constants.DB_STRUCTURE_FILE}\
+        \n\t\tDB_NAME: {Constants.DB_NAME}\n"
     )
 
-    config = read_json(DB_CONFIG_FILE)
+    config = read_json(Constants.DB_CONFIG_FILE)
     db = MySQL(config)
 
-    if {"Database": DB_NAME} not in db.pull("SHOW DATABASES;"):
-        db_structure = read_file(DB_STRUCTURE_FILE)
-        db.push(f"CREATE DATABASE {DB_NAME};")
-        db.push(f"USE {DB_NAME};")
+    if {"Database": Constants.DB_NAME} not in db.pull("SHOW DATABASES;"):
+        db_structure = read_file(Constants.DB_STRUCTURE_FILE)
+        db.push(f"CREATE DATABASE {Constants.DB_NAME};")
+        db.push(f"USE {Constants.DB_NAME};")
         for query in db_structure.split(";")[:-1]:  # Skip everything after the last ';'
             try:
                 db.push(query)
             except:
                 print(f"Unable to execute query: {query}")
-        print("Database created successfully.\nDatabase creation script ended.")
+        print("Database created successfully.\nDatabase creation script ended.\n")
         return
     else:
         print(
-            f"Database: {DB_NAME} is already exists. Delete it and execute the script?\n",
+            f"Database: {Constants.DB_NAME} is already exists. Delete it and execute the script?\n",
             end="",
         )
 
         while True:
-            if force:
-                user_input = 'y'
-            else:
-                user_input = input("Enter y or n\n").lower()
+            user_input = get_user_input(mode=mode)
+
             if user_input == "y":
-                db.push(f"DROP DATABASE {DB_NAME};")
+                db.push(f"DROP DATABASE {Constants.DB_NAME};")
                 start()
                 break
             elif user_input == "n":
