@@ -6,10 +6,12 @@ from global_variables import Constants
 def get_user_input(mode):
     """Returns the user_input based on the mode"""
     if mode == "force":
+        print("Yes")
         return "y"
     elif mode == "ask":
         return input("Enter y or n\n").lower()
     elif mode == "skip":
+        print("No")
         return "n"
     else:
         raise ValueError(
@@ -33,7 +35,7 @@ def start(mode="ask"):
 
     if {"Database": Constants.DB_NAME} not in db.pull("SHOW DATABASES;"):
         print(
-            f"Database creation script started. \n\tConfiguration:\
+            f"\nDatabase creation script started. \n\tConfiguration:\
             \n\t\tDB_CONFIG_FILE: {Constants.DB_CONFIG_FILE}\
             \n\t\tDB_STRUCTURE_FILE: {Constants.DB_STRUCTURE_FILE}\
             \n\t\tDB_NAME: {Constants.DB_NAME}\n"
@@ -50,8 +52,7 @@ def start(mode="ask"):
         return
     else:
         print(
-            f"Database: {Constants.DB_NAME} is already exists. Delete it and execute the script?\n",
-            end="",
+            f"Database: {Constants.DB_NAME} is already exists. Delete it and execute the script?",
         )
 
         while True:
