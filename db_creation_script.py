@@ -12,7 +12,10 @@ def get_user_input(mode):
     elif mode == "skip":
         return "n"
     else:
-        raise ValueError(f'Invalid mode specified: "{mode}". Use "ask","force" or "skip".')
+        raise ValueError(
+            f'Invalid mode specified: "{mode}". Use "ask","force" or "skip".'
+        )
+
 
 def start(mode="ask"):
     """
@@ -25,17 +28,16 @@ def start(mode="ask"):
             'skip': skip database creation if the database already exists
     """
 
-    print(
-        f"Database creation script started. \n\tConfiguration:\
-        \n\t\tDB_CONFIG_FILE: {Constants.DB_CONFIG_FILE}\
-        \n\t\tDB_STRUCTURE_FILE: {Constants.DB_STRUCTURE_FILE}\
-        \n\t\tDB_NAME: {Constants.DB_NAME}\n"
-    )
-
     config = read_json(Constants.DB_CONFIG_FILE)
     db = MySQL(config)
 
     if {"Database": Constants.DB_NAME} not in db.pull("SHOW DATABASES;"):
+        print(
+            f"Database creation script started. \n\tConfiguration:\
+            \n\t\tDB_CONFIG_FILE: {Constants.DB_CONFIG_FILE}\
+            \n\t\tDB_STRUCTURE_FILE: {Constants.DB_STRUCTURE_FILE}\
+            \n\t\tDB_NAME: {Constants.DB_NAME}\n"
+        )
         db_structure = read_file(Constants.DB_STRUCTURE_FILE)
         db.push(f"CREATE DATABASE {Constants.DB_NAME};")
         db.push(f"USE {Constants.DB_NAME};")

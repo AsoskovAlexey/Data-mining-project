@@ -77,3 +77,29 @@ class Scraper:
             del user_input
         else:
             raise Exception("Unable in silent_mode=True")
+
+    def get_cookies(self):
+        """
+        It returns a 'successful serialized cookie data' for current browsing context. If browser is no longer available it returns error.
+        """
+        return self.__driver.get_cookies()
+
+    def add_cookies(self, cookies, silent_mode=True):
+        """
+        It is used to add a cookie to the current browsing context.
+        Add Cookie only accepts a set of defined serializable JSON object.
+        Here is the link to the list of accepted JSON key values:
+        https://www.w3.org/TR/webdriver1/#cookies
+        you need to be on the domain that the cookie will be valid for.
+        If you are trying to preset cookies before you start interacting with
+        a site and your homepage is large / takes a while to load
+        an alternative is to find a smaller page on the site
+        (typically the 404 page is small, e.g. http://example.com/some404page)
+        """
+        for cookie in cookies:
+            try:
+                self.__driver.add_cookie(cookie)
+
+            except Exception as e:
+                if not silent_mode:
+                    print(f"Unable to add cookie:\n\nt{cookie}\n\tError:\n\t{e}")
