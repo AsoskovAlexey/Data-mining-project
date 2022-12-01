@@ -6,3 +6,4 @@ class Constants:
     DB_NAME = "aliexpress"
     URL_404 = "https://www.aliexpress.com/p/error/404.html"
     COOKIES_FILE = "cookies.json"
+    ERROR_LOG_FILE = "error_log.txt"

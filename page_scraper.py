@@ -17,7 +17,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 class Scraper:
 
     # Disable dynamic attributes
-    __slots__ = ["__options", "__driver", "__scroll_pause_time", "__scroll_height"]
+    __slots__ = ["__options", "__driver", "scroll_pause_time", "scroll_height"]
 
     def __init__(
         self,
@@ -27,7 +27,7 @@ class Scraper:
         window_size=(1920, 1080),
     ):
         """
-        Driver init
+        Driver initialization
         """
         self.__options = Options()
         self.__options.headless = silent_mode
@@ -35,8 +35,10 @@ class Scraper:
             service=Service(ChromeDriverManager().install()), options=self.__options
         )
         self.__driver.set_window_size(*window_size)
-        self.__scroll_pause_time = scroll_pause_time
-        self.__scroll_height = scroll_height
+        
+        # Public attributes
+        self.scroll_pause_time = scroll_pause_time
+        self.scroll_height = scroll_height
 
     def get_page(self, url):
         """
@@ -52,10 +54,10 @@ class Scraper:
             )
             scroll = 0
             while True:
-                scroll += self.__scroll_height
+                scroll += self.scroll_height
                 self.__driver.execute_script(f"window.scrollTo(0, {str(scroll)})")
                 # Wait to load page
-                time.sleep(self.__scroll_pause_time)
+                time.sleep(self.scroll_pause_time)
                 # Calculate new scroll height and compare with last scroll height
                 new_height = self.__driver.execute_script(
                     "return document.body.scrollHeight"
@@ -68,7 +70,11 @@ class Scraper:
         scroll(self)
         return BeautifulSoup(self.__driver.page_source, "lxml")
 
-    def apply_page_settings(self, url):
+    def apply_user_settings(self, url):
+        """
+        Allows the user to set page parameters (language, country, currency, etc.).
+        Useful for getting the specified cookies.
+        """
         if self.__options.headless is False:
             user_input = ""
             self.__driver.get(url)
@@ -103,3 +109,4 @@ class Scraper:
             except Exception as e:
                 if not silent_mode:
                     print(f"Unable to add cookie:\n\nt{cookie}\n\tError:\n\t{e}")
+    

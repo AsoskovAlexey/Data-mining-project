@@ -4,3 +4,4 @@ db_config.json
 .ipynb_checkpoints/
 __pycache__/
 test.py
+error_log.txt

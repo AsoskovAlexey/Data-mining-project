@@ -8,12 +8,38 @@ from global_variables import Constants
 import time
 
 
+def append_error_log(log, error_log_file):
+    """Appends an error log"""
+    print(log)
+    with open(error_log_file, "a") as file:
+        file.write(log + "\n")
+
+
 def print_log(log, bracket="="):
     """Prints the log in an easy-to-read format"""
     bracket_multiplier = len(log)
     print("\n", bracket * bracket_multiplier, sep="")
     print(log)
     print(bracket * bracket_multiplier, "\n", sep="")
+
+
+def scrape_product(url, scraper, retries=3):
+    """
+    Tries to scrape a product with scroll_pause_time=0
+    Increases the variable each unsuccessful attempt by 1 second
+    """
+    scroll_pause_time = scraper.scroll_pause_time
+    scraper.scroll_pause_time = 0
+    for i in range(retries):
+        try:
+            product = Product(url, scraper.get_page(url))
+            scraper.scroll_pause_time = scroll_pause_time
+            return product
+        except Exception as e:
+            if i < retries - 1:
+                raise Exception
+            else:
+                scraper.scroll_pause_time += 1
 
 
 def main():
@@ -39,9 +65,10 @@ def main():
     print_log(
         f"Scraper initialization started: {time.asctime(time.localtime(scraper_initialization_start_time))}"
     )
-    scraper = Scraper(silent_mode=True, scroll_pause_time=1)
+    scraper = Scraper(silent_mode=True, scroll_pause_time=0)
     scraper.get_page(Constants.URL_404)
     scraper.add_cookies(read_json(Constants.COOKIES_FILE))
+    scraper.scroll_pause_time = 1
     print_log(
         f"Scraper initialization ended in: {round(time.time() - scraper_initialization_start_time, 2)} seconds"
     )
@@ -55,28 +82,32 @@ def main():
     )
 
     product_number = 0
+    total_time = 0
+    n_errors = 0
     for page in range(1, n_pages + 1):
         current_url = category_url + f"?&page={page}"
         page_with_products = Page(scraper.get_page(current_url))
-        print(current_url)
         page_start_time = time.time()
         print_log(
-            f"Scraping from page started: {time.asctime(time.localtime(page_start_time))}"
+            f"Scraping from page #{page} started: {time.asctime(time.localtime(page_start_time))}"
         )
-        for url in page_with_products.get_links():
+        for product_url in page_with_products.get_links():
             try:
-                product = Product(url, scraper.get_page(url))
+                product = scrape_product(product_url, scraper)
                 db.push(
                     f'REPLACE INTO products (id, link, title, rating, n_reviews, n_orders, price, category_id)\
                     VALUES ({product.id}, "{product.link}", "{product.title}", {product.rating}, {product.n_reviews}, {product.n_orders}, {product.price}, {category});'
                 )
                 product_number += 1
-                print(f"Product #{product_number} - id: {product.id}")
+                print(f"Product #{product_number}\tid: {product.id}")
             except Exception as e:
-                print(f"Unable to process product. URL: {url}\nError: {e}")
+                n_errors += 1
+                append_error_log(f"Error #{n_errors}, time: {time.asctime(time.localtime(time.time()))}\nURL: {product_url}\nError: {e}", Constants.ERROR_LOG_FILE)
 
+        page_scraping_time = time.time() - page_start_time
+        total_time += page_scraping_time
         print_log(
-            f"Scraping from page ended in: {round(time.time() - page_start_time, 2)} seconds"
+            f"Scraping from page #{page} ended in: {round(page_scraping_time, 2)} seconds, average time: {round(total_time / page, 2)} seconds"
         )
 
     print_log(

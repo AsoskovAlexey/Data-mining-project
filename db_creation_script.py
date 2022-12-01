@@ -6,12 +6,12 @@ from global_variables import Constants
 def get_user_input(mode):
     """Returns the user_input based on the mode"""
     if mode == "force":
-        print("Yes")
+        print(f'mode: {mode}')
         return "y"
     elif mode == "ask":
         return input("Enter y or n\n").lower()
     elif mode == "skip":
-        print("No")
+        print(f'mode: {mode}')
         return "n"
     else:
         raise ValueError(
@@ -63,7 +63,7 @@ def start(mode="ask"):
                 start()
                 break
             elif user_input == "n":
-                print("Database creation aborted.\nDatabase creation script ended.")
+                print("Database creation aborted.")
                 break
             else:
                 print("Invalid input")
