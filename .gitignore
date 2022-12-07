@@ -5,4 +5,4 @@ db_config.json
 .idea/
 __pycache__/
 test.py
-error_log.txt
+*log.txt
