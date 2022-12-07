@@ -5,7 +5,13 @@ from database.database_driver import MySQL
 import database.database_creation_script as db_creation_script
 from global_functions import read_json, read_configuration
 from database.database_query_generator import create_product_query
+from log.logger import Logger, add_brackets
 import time
+
+
+def get_human_readable_time(time):
+    """Returns the human readable time"""
+    return time.asctime(time.localtime(time))
 
 
 def append_error_log(log, error_log_file):
@@ -37,7 +43,7 @@ def scrape_product(url, category, scraper, retries=3):
             return product
         except AttributeError as e:
             if i < retries - 1:
-                raise Exception(f'Unable to scrape product: {url}')
+                raise Exception(f"Unable to scrape product: {url}")
             else:
                 scraper.scroll_pause_time += 1
 
@@ -47,13 +53,15 @@ def main():
     """
     Gets products from 1st page and inserts them into database
     """
-    configuration = read_configuration()
-    main_start_time = time.time()
-    print_log(f"Main function started: {time.asctime(time.localtime(main_start_time))}")
+
+    # Logger initialization
+    logger = Logger()
 
     # NOTE: url and categories are hardcoded, but will be replaced in the future.
     category_url = "https://www.aliexpress.com/category/708042/cpus.html"
     category = 0
+
+    configuration = read_configuration()
 
     # Database initialization
     db = MySQL(configuration["database"])
@@ -62,28 +70,34 @@ def main():
 
     # Scraper initialization
     scraper_initialization_start_time = time.time()
-    print_log(
-        f"Scraper initialization started: {time.asctime(time.localtime(scraper_initialization_start_time))}"
+    logger.write_log(
+        add_brackets(
+            f"Scraper initialization started: {get_human_readable_time(scraper_initialization_start_time)}"
+        )
     )
     scraper = Scraper(silent_mode=True, scroll_pause_time=0)
     scraper.get_page(configuration["web"]["url"]["404_page"])
     scraper.add_cookies(read_json(configuration["web"]["cookies_file"]))
     scraper.scroll_pause_time = 1
-    print_log(
-        f"Scraper initialization ended in: {round(time.time() - scraper_initialization_start_time, 2)} seconds"
+    logger.write_log(
+        add_brackets(
+            f"Scraper initialization ended in: {time.time() - scraper_initialization_start_time:.2} seconds"
+        )
     )
 
     page_with_products = Page(scraper.get_page(category_url))
-    
+
     try:
         n_pages = page_with_products.get_n_pages()
     except AttributeError:
-        print('Unable to get page, please try again later')
+        print("Unable to get page, please try again later")
         return
 
     category_start_time = time.time()
-    print_log(
-        f"Scraping from category started: {time.asctime(time.localtime(category_start_time))}"
+    logger.write_log(
+        add_brackets(
+            f"Scraping from category started: {get_human_readable_time(category_start_time)}"
+        )
     )
     product_number = 0
     total_time = 0
@@ -117,11 +131,6 @@ def main():
     print_log(
         f"Scraping from category ended in: {round(time.time() - category_start_time, 2)} seconds"
     )
-
-    print_log(
-        f"Main function ended in: {round(time.time() - main_start_time, 2)} seconds"
-    )
-    print_log(f"{time.asctime(time.localtime(time.time()))}")
 
 
 if __name__ == "__main__":
