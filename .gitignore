@@ -2,6 +2,7 @@ db_config.json
 .vscode/
 .venv/
 .ipynb_checkpoints/
+.idea/
 __pycache__/
 test.py
 error_log.txt
