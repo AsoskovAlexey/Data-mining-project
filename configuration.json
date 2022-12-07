@@ -1,0 +1,21 @@
+{
+    "database": {
+        "host": "your_host",
+        "user": "your_user",
+        "password": "your_password",
+        "database_name": "aliexpress",
+        "structure_file": "database/database_project_structure.sql"
+    },
+    "web": {
+        "url": {
+            "main_page": "https://www.aliexpress.com",
+            "404_page": "https://www.aliexpress.com/p/error/404.html"
+        },
+        "cookies_file": "cookies.json"
+    },
+    "log": {
+        "error_log_file": "log/error_log.txt",
+        "log_file": "log/log.txt"
+    }
+    
+}

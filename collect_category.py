@@ -1,10 +1,10 @@
-from page_scraper import Scraper
+from scraper import Scraper
 from page import Page
 from product import Product
-from db import MySQL
-import db_creation_script
-from global_functions import read_json
-from global_variables import Constants
+from database.database_driver import MySQL
+import database.database_creation_script as db_creation_script
+from global_functions import read_json, read_configuration
+from database.database_query_generator import create_product_query
 import time
 
 
@@ -23,7 +23,7 @@ def print_log(log, bracket="="):
     print(bracket * bracket_multiplier, "\n", sep="")
 
 
-def scrape_product(url, scraper, retries=3):
+def scrape_product(url, category, scraper, retries=3):
     """
     Tries to scrape a product with scroll_pause_time=0
     Increases the variable each unsuccessful attempt by 1 second
@@ -32,12 +32,12 @@ def scrape_product(url, scraper, retries=3):
     scraper.scroll_pause_time = 0
     for i in range(retries):
         try:
-            product = Product(url, scraper.get_page(url))
+            product = Product(url, category, scraper.get_page(url))
             scraper.scroll_pause_time = scroll_pause_time
             return product
-        except Exception as e:
+        except AttributeError as e:
             if i < retries - 1:
-                raise Exception
+                raise Exception(f'Unable to scrape product: {url}')
             else:
                 scraper.scroll_pause_time += 1
 
@@ -47,7 +47,7 @@ def main():
     """
     Gets products from 1st page and inserts them into database
     """
-
+    configuration = read_configuration()
     main_start_time = time.time()
     print_log(f"Main function started: {time.asctime(time.localtime(main_start_time))}")
 
@@ -56,9 +56,9 @@ def main():
     category = 0
 
     # Database initialization
-    db = MySQL(read_json(Constants.DB_CONFIG_FILE))
-    db_creation_script.start(mode="skip")
-    db.push(f"USE {Constants.DB_NAME};")
+    db = MySQL(configuration["database"])
+    db_creation_script.start(mode="force")
+    db.use_database(configuration["database"]["database_name"])
 
     # Scraper initialization
     scraper_initialization_start_time = time.time()
@@ -66,21 +66,25 @@ def main():
         f"Scraper initialization started: {time.asctime(time.localtime(scraper_initialization_start_time))}"
     )
     scraper = Scraper(silent_mode=True, scroll_pause_time=0)
-    scraper.get_page(Constants.URL_404)
-    scraper.add_cookies(read_json(Constants.COOKIES_FILE))
+    scraper.get_page(configuration["web"]["url"]["404_page"])
+    scraper.add_cookies(read_json(configuration["web"]["cookies_file"]))
     scraper.scroll_pause_time = 1
     print_log(
         f"Scraper initialization ended in: {round(time.time() - scraper_initialization_start_time, 2)} seconds"
     )
 
     page_with_products = Page(scraper.get_page(category_url))
-    n_pages = page_with_products.get_n_pages()
+    
+    try:
+        n_pages = page_with_products.get_n_pages()
+    except AttributeError:
+        print('Unable to get page, please try again later')
+        return
 
     category_start_time = time.time()
     print_log(
         f"Scraping from category started: {time.asctime(time.localtime(category_start_time))}"
     )
-
     product_number = 0
     total_time = 0
     n_errors = 0
@@ -93,16 +97,16 @@ def main():
         )
         for product_url in page_with_products.get_links():
             try:
-                product = scrape_product(product_url, scraper)
-                db.push(
-                    f'REPLACE INTO products (id, link, title, rating, n_reviews, n_orders, price, category_id)\
-                    VALUES ({product.id}, "{product.link}", "{product.title}", {product.rating}, {product.n_reviews}, {product.n_orders}, {product.price}, {category});'
-                )
+                product = scrape_product(product_url, category, scraper)
+                db.push(create_product_query(product))
                 product_number += 1
                 print(f"Product #{product_number}\tid: {product.id}")
             except Exception as e:
                 n_errors += 1
-                append_error_log(f"Error #{n_errors}, time: {time.asctime(time.localtime(time.time()))}\nURL: {product_url}\nError: {e}", Constants.ERROR_LOG_FILE)
+                append_error_log(
+                    f"Error #{n_errors}, {time.asctime(time.localtime(time.time()))}\nURL: {product_url}\nError: {e}",
+                    configuration["error_log_file"],
+                )
 
         page_scraping_time = time.time() - page_start_time
         total_time += page_scraping_time

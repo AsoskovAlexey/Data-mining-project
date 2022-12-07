@@ -15,7 +15,7 @@ class Product:
             price
     """
 
-    def __init__(self, url, soup):
+    def __init__(self, url, category, soup):
         """
         Init product and sets attributes from BeautifulSoup soup
         """
@@ -61,3 +61,5 @@ class Product:
             self.price = get_price(price)
         else:
             self.price = "NULL"
+            
+        self.category = category

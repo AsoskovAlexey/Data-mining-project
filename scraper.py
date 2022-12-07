@@ -5,14 +5,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-# import re
-# from selenium.common import TimeoutException
-# from tqdm import tqdm
-# from selenium.webdriver import ActionChains
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.support.wait import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-
 
 class Scraper:
 
@@ -35,7 +27,7 @@ class Scraper:
             service=Service(ChromeDriverManager().install()), options=self.__options
         )
         self.__driver.set_window_size(*window_size)
-        
+
         # Public attributes
         self.scroll_pause_time = scroll_pause_time
         self.scroll_height = scroll_height
@@ -109,4 +101,3 @@ class Scraper:
             except Exception as e:
                 if not silent_mode:
                     print(f"Unable to add cookie:\n\nt{cookie}\n\tError:\n\t{e}")
-    

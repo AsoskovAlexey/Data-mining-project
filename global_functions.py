@@ -17,3 +17,13 @@ def read_json(path):
             return json.load(json_file)
     except FileNotFoundError:
         raise FileNotFoundError(f"Error: No such file: {path}")
+
+
+def read_configuration():
+    "Returns a data from configuration.json"
+    CONFIGURATION_FILE = "configuration.json"
+    return read_json(CONFIGURATION_FILE)
+
+def append_file(path, text):
+    with open(path, "a") as file:
+        file.write(text + "\n")

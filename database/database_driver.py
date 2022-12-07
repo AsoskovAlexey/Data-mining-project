@@ -8,14 +8,14 @@ class MySQL:
 
     __slots__ = ["__connection"]
 
-    def __init__(self, config):
+    def __init__(self, configuration):
         """
         Initialize a connection for the MySQL server
         """
         self.__connection = pymysql.connect(
-            host=config["host"],
-            user=config["user"],
-            password=config["password"],
+            host=configuration["host"],
+            user=configuration["user"],
+            password=configuration["password"],
             cursorclass=pymysql.cursors.DictCursor,
         )
 
@@ -34,3 +34,9 @@ class MySQL:
         with self.__connection.cursor() as cursor:
             cursor.execute(query)
             self.__connection.commit()
+
+    def use_database(self, database_name):
+        try:
+            self.push(f"USE {database_name};")
+        except pymysql.err.OperationalError:
+            raise ValueError(f"Error: No such database: {database_name}")
