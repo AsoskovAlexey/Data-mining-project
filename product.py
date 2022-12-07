@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 
+# TODO: Add converter.py and edit database_project_structure
 
 class Product:
     """

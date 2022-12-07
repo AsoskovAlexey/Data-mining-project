@@ -33,7 +33,7 @@ def append_file(path, text):
 
 
 def create_default_scraper():
-    """Returns a webscraper with cookies"""
+    """Returns a scraper with cookies"""
     import scraper
     config = read_configuration()["web"]
     default_scraper = scraper.Scraper(scroll_pause_time=0)

@@ -1,16 +1,18 @@
 from database.database_driver import MySQL
 from global_functions import read_configuration, read_file
+from log.logger import Logger, add_brackets, get_human_readable_time
+import time
 
 
-def get_user_input(mode):
+def get_user_input(mode, logger):
     """Returns the user_input based on the mode"""
     if mode == "force":
-        print(f"mode: {mode}")
+        logger.write_log(f"mode: {mode}")
         return "y"
     elif mode == "ask":
         return input("Enter y or n\n").lower()
     elif mode == "skip":
-        print(f"mode: {mode}")
+        logger.write_log(f"mode: {mode}")
         return "n"
     else:
         raise ValueError(
@@ -18,10 +20,10 @@ def get_user_input(mode):
         )
 
 
-def execute_script(database_driver, database_configuration):
+def execute_script(database_driver, database_configuration, logger, db_start_time):
     """Executes database creation script"""
-    print(
-        f"Database creation script started. \n\tConfiguration:\
+    logger.write_log(
+        f"Database creation started. \n\tConfiguration:\
             \n\t\tstructure_file: {database_configuration['structure_file']}\
             \n\t\tdatabase_name: {database_configuration['database_name']}\n"
     )
@@ -32,13 +34,14 @@ def execute_script(database_driver, database_configuration):
         try:
             database_driver.push(query)
         except:
-            print(f"Unable to execute query: {query}")
-    print("Database created successfully.\nDatabase creation script ended.\n")
+            logger.write_log(f"Unable to execute query: {query}")
+    logger.write_log(f"Database created successfully in: {(time.time() - db_start_time):.2} seconds")
+    logger.write_log(add_brackets(f"Database creation script ended, {get_human_readable_time(time.time())}"))
 
 
-def start(mode="ask"):
+def start(mode="ask", logger=None):
     """
-    Executes the database creation script
+    Executes the database creation script using the 'mode'
 
     Args:
         mode (str, optional): Defaults to "ask".
@@ -46,24 +49,31 @@ def start(mode="ask"):
             'force': force creation of new database
             'skip': skip database creation if the database already exists
     """
+    db_start_time = time.time()
+    # Logger initialization
+    if logger is None:
+        logger = Logger(name='database')
+    
+    logger.write_log(add_brackets(f'Database creation script started, {get_human_readable_time(db_start_time)}'))
+    
     configuration = read_configuration()["database"]
     db_driver = MySQL(configuration)
     if {"Database": configuration["database_name"]} not in db_driver.pull(
         "SHOW DATABASES;"
     ):
-        execute_script(db_driver, configuration)
+        execute_script(db_driver, configuration, logger)
     else:
-        print(
+        logger.write_log(
             f"Database: {configuration['database_name']} is already exists. Delete it and execute the script?",
         )
         while True:
-            user_input = get_user_input(mode=mode)
+            user_input = get_user_input(mode, logger)
             if user_input == "y":
                 db_driver.push(f"DROP DATABASE {configuration['database_name']};")
-                execute_script(db_driver, configuration)
+                execute_script(db_driver, configuration, logger, db_start_time)
                 break
             elif user_input == "n":
-                print("Database creation aborted.")
+                logger.write_log(f"Database creation aborted, {get_human_readable_time(time.time())}")
                 break
             else:
-                print("Invalid input")
+                logger.write_log("Invalid input")
