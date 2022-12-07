@@ -1,5 +1,7 @@
 import json
 
+CONFIGURATION_FILE = "configuration.json"
+
 
 def read_file(path):
     """Returns a file as a string"""
@@ -20,10 +22,22 @@ def read_json(path):
 
 
 def read_configuration():
-    "Returns a data from configuration.json"
-    CONFIGURATION_FILE = "configuration.json"
+    """Returns a data from configuration.json"""
     return read_json(CONFIGURATION_FILE)
 
+
 def append_file(path, text):
+    """writes text to the end of the file"""
     with open(path, "a") as file:
         file.write(text + "\n")
+
+
+def create_default_scraper():
+    """Returns a webscraper with cookies"""
+    import scraper
+    config = read_configuration()["web"]
+    default_scraper = scraper.Scraper(scroll_pause_time=0)
+    default_scraper.get_page(config['url']['404_page'])
+    default_scraper.add_cookies(read_json(config['cookies_file']))
+    default_scraper.scroll_pause_time = 1
+    return default_scraper
