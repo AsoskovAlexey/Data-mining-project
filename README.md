@@ -1,23 +1,22 @@
 # Data-mining-project
-
-## A repository for the data mining project at :mortar_board: ITC, Israel. 
+### A repository for the data mining project at :mortar_board: ITC, Israel. 
 This project aims to collect data from [Aliexpress](https://aliexpress.com) for further analysis. 
-A repository for the data mining project at mortar_board ITC, Israel.
-This project aims to collect data from Aliexpress for further analysis.
+### Currently implemented features:
+:heavy_check_mark: Command line interface for easy interaction
 
-## What it does:
-Collects product data for each product from Aliexpress categogy and push it to the database.
-Just run the **main.py** and follow the steps below:
-0. Set up the **db_config.json** file in the **db** directory.
-1. Auto database creation
-2. database driver initialization
-3. Scraper initialization
-4. The Aliexpress page opens.You need to configure the **country, language, currency and accept the cookies**. After that, go back to the **console** and press **enter**.
-5. Wait for the results.
+:heavy_check_mark: Database creation with MySQL
 
-## Currently implemented features:
-1. Webscraper called **page_scraper.py**. Gets the **url**, scroll down the page and returns a **BeautifulSoup**.
-2. Database creation script **db_creation_script.py**.
-Creates the database from **path to database structure file**. You need to set up the **db/db_config.json**.
-If the databe is already exists asks to delite it and execute the scrit again.
-3. Implemented **MySQL** database driver, that allows to pull and push the data (or any changes) to/from the databese **db.py**.
+:heavy_check_mark: Automatic installation of webdriver
+
+:heavy_check_mark: Logger to monitor the work 
+
+:heavy_check_mark: Storing product data (prices in USD and ILS and the date they were retrived are stored in a separate table)
+
+Currently, the scraping engine on *selenium* was implemented to parse any Aliexpress category or the [special offers page](https://campaign.aliexpress.com/wow/gcp/new-user-channel/index).
+## In order to use:
+1. set up the libraries from requirments.txt
+2. Have *Google Chrome* set up on your computer
+3. Fill in your information in ```configuration.json```. Your user must have the right to create databases and tables, read and write to the database:exclamation:
+4. The database will be created with the name you specify in this file.
+
+Project authors : [Asoskov Aleksei](https://www.linkedin.com/in/aleksei-asoskov-b3051b257/), [Denis Laevskiy](https://www.linkedin.com/in/denis-laevskiy-79b715221/)
