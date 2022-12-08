@@ -21,9 +21,9 @@ def read_json(path):
         raise FileNotFoundError(f"Error: No such file: {path}")
 
 
-def read_configuration():
+def read_configuration(configuration_file=CONFIGURATION_FILE):
     """Returns a data from configuration.json"""
-    return read_json(CONFIGURATION_FILE)
+    return read_json(configuration_file)
 
 
 def append_file(path, text):
@@ -34,7 +34,7 @@ def append_file(path, text):
 
 def create_default_scraper():
     """Returns a scraper with cookies"""
-    import scraper
+    import library.scraper as scraper
     config = read_configuration()["web"]
     default_scraper = scraper.Scraper(scroll_pause_time=0)
     default_scraper.get_page(config['url']['404_page'])

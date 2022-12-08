@@ -1,9 +1,9 @@
-from page import Page
-from product import Product
+from library.page import Page
+from library.product import Product
 from database.database_driver import MySQL
-from global_functions import read_configuration, create_default_scraper
+from library.global_functions import read_configuration, create_default_scraper
 from database.database_query_generator import create_product_query
-from log.logger import Logger, add_brackets, get_human_readable_time
+from library.logger import Logger, add_brackets, get_human_readable_time
 import time
 
 

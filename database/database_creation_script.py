@@ -1,6 +1,6 @@
 from database.database_driver import MySQL
-from global_functions import read_configuration, read_file
-from log.logger import Logger, add_brackets, get_human_readable_time
+from library.global_functions import read_configuration, read_file
+from library.logger import Logger, add_brackets, get_human_readable_time
 import time
 
 

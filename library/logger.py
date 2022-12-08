@@ -1,4 +1,4 @@
-from global_functions import read_configuration, append_file
+from library.global_functions import read_configuration, append_file
 import time
 
 class Logger:
