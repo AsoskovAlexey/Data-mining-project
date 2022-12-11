@@ -35,8 +35,9 @@ def execute_script(database_driver, database_configuration, logger, db_start_tim
             database_driver.push(query)
         except:
             logger.write_log(f"Unable to execute query: {query}")
-    logger.write_log(f"Database created successfully in: {(time.time() - db_start_time):.2} seconds")
-    logger.write_log(add_brackets(f"Database creation script ended, {get_human_readable_time(time.time())}"))
+    logger.write_log(
+        f"Database created successfully in: {(time.time() - db_start_time):.2} seconds"
+    )
 
 
 def start(mode="ask", logger=None):
@@ -52,10 +53,14 @@ def start(mode="ask", logger=None):
     db_start_time = time.time()
     # Logger initialization
     if logger is None:
-        logger = Logger(name='database')
-    
-    logger.write_log(add_brackets(f'Database creation script started, {get_human_readable_time(db_start_time)}'))
-    
+        logger = Logger(name="database")
+
+    logger.write_log(
+        add_brackets(
+            f"Database creation script started, {get_human_readable_time(db_start_time)}"
+        )
+    )
+
     configuration = read_configuration()["database"]
     db_driver = MySQL(configuration)
     if {"Database": configuration["database_name"]} not in db_driver.pull(
@@ -73,7 +78,14 @@ def start(mode="ask", logger=None):
                 execute_script(db_driver, configuration, logger, db_start_time)
                 break
             elif user_input == "n":
-                logger.write_log(f"Database creation aborted, {get_human_readable_time(time.time())}")
+                logger.write_log(
+                    f"Database creation aborted, {get_human_readable_time(time.time())}"
+                )
                 break
             else:
                 logger.write_log("Invalid input")
+    logger.write_log(
+        add_brackets(
+            f"Database creation script ended, {get_human_readable_time(time.time())}"
+        )
+    )
