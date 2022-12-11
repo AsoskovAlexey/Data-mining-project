@@ -101,3 +101,15 @@ class Scraper:
             except Exception as e:
                 if not silent_mode:
                     print(f"Unable to add cookie:\n\nt{cookie}\n\tError:\n\t{e}")
+
+
+def create_default_scraper():
+    """Returns a default scraper with cookies"""
+    from library.global_functions import read_configuration, read_json
+
+    config = read_configuration()["web"]
+    default_scraper = Scraper(scroll_pause_time=0)
+    default_scraper.get_page(config["url"]["404_page"])
+    default_scraper.add_cookies(read_json(config["cookies_file"]))
+    default_scraper.scroll_pause_time = 1
+    return default_scraper

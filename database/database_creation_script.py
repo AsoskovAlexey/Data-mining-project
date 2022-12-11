@@ -11,12 +11,12 @@ def get_user_input(mode, logger):
         return "y"
     elif mode == "ask":
         return input("Enter y or n\n").lower()
-    elif mode == "skip":
+    elif mode == "soft":
         logger.write_log(f"mode: {mode}")
         return "n"
     else:
         raise ValueError(
-            f'Invalid mode specified: "{mode}". Use "ask","force" or "skip".'
+            f'Invalid mode specified: "{mode}". Use "ask","force" or "soft".'
         )
 
 
@@ -47,7 +47,7 @@ def start(mode="ask", logger=None):
         mode (str, optional): Defaults to "ask".
             'ask': asks what to do if database is already exists
             'force': force creation of new database
-            'skip': skip database creation if the database already exists
+            'soft': skip database creation if the database already exists
     """
     db_start_time = time.time()
     # Logger initialization

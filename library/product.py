@@ -1,26 +1,30 @@
 import re
-from bs4 import BeautifulSoup
+from library.converter import convert
 
-# TODO: Add converter.py and edit database_project_structure
 
 class Product:
     """
     Dataclass for Product
         Attributes:
             id
+            aliexpress_id
             link
             title
             rating
             n_reviews
             n_orders
-            price
+            price_usd
+            price_ils
+            category_id
     """
 
-    def __init__(self, url, category, soup):
+    def __init__(self, url, soup):
         """
         Init product and sets attributes from BeautifulSoup soup
         """
-        self.id = re.search(r"item/.+html", url).group(0)[
+        self.id = None
+        self.category_id = None
+        self.aliexpress_id = re.search(r"item/.+html", url).group(0)[
             5:-5
         ]  # remove "item/" and ".html"
         self.link = url
@@ -57,10 +61,11 @@ class Product:
             return re.search(r"\d+[\.,]\d+", html_tag.text).group(0).replace(",", ".")
 
         if (price := soup.find("span", class_="uniform-banner-box-price")) is not None:
-            self.price = get_price(price)
+            self.price_usd = get_price(price)
+            self.price_ils = convert(self.price_usd)
         elif (price := soup.find("span", class_="product-price-value")) is not None:
-            self.price = get_price(price)
+            self.price_usd = get_price(price)
+            self.price_ils = convert(self.price_usd)
         else:
-            self.price = "NULL"
-            
-        self.category = category
+            self.price_usd = "NULL"
+            self.price_ils = "NULL"
