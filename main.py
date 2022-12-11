@@ -13,7 +13,8 @@ def get_arguments():
 
     parser.add_argument(
         "url",
-        help='URL of the aliexpress category (or any search) page you want to scrape. Example: "https://www.aliexpress.com/category/708042/cpus.html"',
+        help='URL of the aliexpress category (or any search) page you want to scrape.\
+            Example: "https://www.aliexpress.com/category/708042/cpus.html"',
     )
 
     parser.add_argument(
