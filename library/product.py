@@ -28,7 +28,7 @@ class Product:
             5:-5
         ]  # remove "item/" and ".html"
         self.link = url
-        self.title = soup.find("h1", class_="product-title-text").text.replace('"', '')
+        self.title = soup.find("h1", class_="product-title-text").text.replace('"', '\\"')
 
         # If there is no rating, it is not displayed on the product page
         if (rating := soup.find("span", class_="overview-rating-average")) is not None:
