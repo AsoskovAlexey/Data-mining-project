@@ -26,5 +26,5 @@ CREATE TABLE prices (
   PRIMARY KEY (id)
 );
 
-ALTER TABLE products ADD FOREIGN KEY(category_id) REFERENCES categories(id);
-ALTER TABLE prices ADD FOREIGN KEY(product_id) REFERENCES products(id);
+#ALTER TABLE products ADD FOREIGN KEY(category_id) REFERENCES categories(id);
+#ALTER TABLE prices ADD FOREIGN KEY(product_id) REFERENCES products(id);
