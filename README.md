@@ -25,7 +25,7 @@ Currently, the scraping engine on *selenium* was implemented to parse any Aliexp
 - ```"category"``` - how the category will be named in the database
 - *optional* ```-m``` or ```--mode``` - Mode of the database creation script, defaults to "ask" :
   -  "ask": asks what to do if database is already exists
-  - "force": force creation of new database. :skull_and_crossbones: if the database already has some data, all the data will be deleted, as this option creates all the tables anew :exclamation:
+  - "force": force creation of new database. :skull_and_crossbones: if the database already has some data, **all the data will be deleted**, as this option creates all the tables anew :exclamation:
   - "soft": skip database creation if the database already exists
 
 Project authors : [Asoskov Aleksei](https://www.linkedin.com/in/aleksei-asoskov-b3051b257/), [Denis Laevskiy](https://www.linkedin.com/in/denis-laevskiy-79b715221/)
