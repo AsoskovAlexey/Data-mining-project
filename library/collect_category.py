@@ -139,7 +139,8 @@ def start_engine(category_url, title, display_log=True):
     )
 
     category_id = get_category_id(category_url, title, db)
-    n_pages = get_n_pages(category_url)
+    #n_pages = get_n_pages(category_url)
+    n_pages = 60 # ! HOTFIX. TODO: Update according to changes on aliexpress
 
     # Counters
     product_number = 0

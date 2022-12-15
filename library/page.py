@@ -9,7 +9,7 @@ class Page:
         self.__page = page
         self.__links = [
             "https://" + re.search(r'.+html', result.get("href")[2:]).group(0)
-            for result in page.findAll("a", class_="_1lP57 _2f4Ho")
+            for result in page.findAll("a", class_="manhattan--container--1lP57Ag cards--gallery--2o6yJVt")
         ]
         self.__n_pages = None
 
